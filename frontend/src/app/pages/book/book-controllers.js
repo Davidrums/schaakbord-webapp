@@ -1,5 +1,5 @@
 /**
- * This file contains all necessary Angular controller definitions for 'frontend.examples.author' module.
+ * This file contains all necessary Angular controller definitions for 'frontend.pages.book' module.
  *
  * Note that this file should only contain controllers and nothing else.
  */
@@ -7,35 +7,44 @@
     'use strict';
 
     /**
-     * Controller for new author creation.
+     * Controller for new book creation.
      */
-    angular.module('frontend.examples.author')
-        .controller('AuthorAddController',
+    angular.module('frontend.pages.book')
+        .controller('BookAddController',
             [
                 '$scope', '$state',
-                'MessageService', 'AuthorModel',
-                function (
+                'MessageService',
+                'BookModel',
+                '_authors',
+                function(
                     $scope, $state,
-                    MessageService, AuthorModel
+                    MessageService,
+                    BookModel,
+                    _authors
                 ) {
-                    // Initialize author model
-                    $scope.author = {
-                        name: '',
-                        description: ''
+                    // Store authors
+                    $scope.authors = _authors;
+
+                    // Initialize book model
+                    $scope.book = {
+                        title: '',
+                        description: '',
+                        author: '',
+                        releaseDate: new Date()
                     };
 
                     /**
-                     * Scope function to store new author to database. After successfully save user will be redirected
-                     * to view that new created author.
+                     * Scope function to store new book to database. After successfully save user will be redirected
+                     * to view that new created book.
                      */
-                    $scope.addAuthor = function addAuthor() {
-                        AuthorModel
-                            .create(angular.copy($scope.author))
+                    $scope.addBook = function addBook() {
+                        BookModel
+                            .create(angular.copy($scope.book))
                             .then(
                                 function onSuccess(result) {
-                                    MessageService.success('New author added successfully');
+                                    MessageService.success('New book added successfully');
 
-                                    $state.go('examples.author', {id: result.data.id});
+                                    $state.go('pages.book', {id: result.data.id});
                                 }
                             );
                     };
@@ -44,38 +53,37 @@
         );
 
     /**
-     * Controller to show single author on GUI.
+     * Controller to show single book on GUI.
      */
-    angular.module('frontend.examples.author')
-        .controller('AuthorController',
+    angular.module('frontend.pages.book')
+        .controller('BookController',
             [
                 '$scope', '$state',
                 'CurrentUser', 'MessageService',
-                'AuthorModel', 'BookModel',
-                '_author', '_books', '_booksCount',
+                'BookModel', 'AuthorModel',
+                '_book',
                 function(
                     $scope, $state,
                     CurrentUser, MessageService,
-                    AuthorModel, BookModel,
-                    _author, _books, _booksCount
+                    BookModel, AuthorModel,
+                    _book
                 ) {
-                    // Set current scope reference to models
-                    AuthorModel.setScope($scope, 'author');
-                    BookModel.setScope($scope, false, 'books', 'booksCount');
+                    // Set current scope reference to model
+                    BookModel.setScope($scope, 'book');
 
-                    // Expose necessary data
+                    // Initialize scope data
                     $scope.user = CurrentUser.user();
-                    $scope.author = _author;
-                    $scope.books = _books;
-                    $scope.booksCount = _booksCount.count;
+                    $scope.book = _book;
+                    $scope.authors = [];
+                    $scope.selectAuthor = _book.author ? _book.author.id : null;
 
-                    // Author delete dialog buttons configuration
+                    // Book delete dialog buttons configuration
                     $scope.confirmButtonsDelete = {
                         ok: {
                             label: 'Delete',
                             className: 'btn-danger',
                             callback: function callback() {
-                                $scope.deleteAuthor();
+                                $scope.deleteBook();
                             }
                         },
                         cancel: {
@@ -84,56 +92,78 @@
                         }
                     };
 
-                    // Scope function to save modified author.
-                    $scope.saveAuthor = function saveAuthor() {
-                        var data = angular.copy($scope.author);
+                    /**
+                     * Scope function to save actual modified book. Basically this will send a socket request to
+                     * backend server with modified object.
+                     */
+                    $scope.saveBook = function saveBook() {
+                        var data = angular.copy($scope.book);
+
+                        // Set author id to update data
+                        data.author = $scope.selectAuthor;
 
                         // Make actual data update
-                        AuthorModel
+                        BookModel
                             .update(data.id, data)
                             .then(
                                 function onSuccess() {
-                                    MessageService.success('Author "' + $scope.author.name + '" updated successfully');
+                                    MessageService.success('Book "' + $scope.book.title + '" updated successfully');
                                 }
                             );
                     };
 
-                    // Scope function to delete author
-                    $scope.deleteAuthor = function deleteAuthor() {
-                        AuthorModel
-                            .delete($scope.author.id)
+                    /**
+                     * Scope function to delete current book. This will send DELETE query to backend via web socket
+                     * query and after successfully delete redirect user back to book list.
+                     */
+                    $scope.deleteBook = function deleteBook() {
+                        BookModel
+                            .delete($scope.book.id)
                             .then(
                                 function onSuccess() {
-                                    MessageService.success('Author "' + $scope.author.name + '" deleted successfully');
+                                    MessageService.success('Book "' + $scope.book.title + '" deleted successfully');
 
-                                    $state.go('examples.authors');
+                                    $state.go('pages.books');
                                 }
                             );
+                    };
+
+                    /**
+                     * Scope function to fetch author data when needed, this is triggered whenever user starts to edit
+                     * current book.
+                     *
+                     * @returns {null|promise}
+                     */
+                    $scope.loadAuthors = function loadAuthors() {
+                        return $scope.authors.length ? null : AuthorModel.load().then(function onSuccess(data) {
+                            $scope.authors = data;
+                        });
                     };
                 }
             ]
         );
 
     /**
-     * Controller which contains all necessary logic for author list GUI on boilerplate application.
+     * Controller which contains all necessary logic for book list GUI on boilerplate application.
      */
-    angular.module('frontend.examples.author')
-        .controller('AuthorListController',
+    angular.module('frontend.pages.book')
+        .controller('BookListController',
             [
                 '$scope', '$q', '$timeout',
                 '_',
-                'ListConfig',
-                'SocketWhereCondition', 'CurrentUser', 'AuthorModel',
-                '_items', '_count',
+                'ListConfig', 'SocketWhereCondition',
+                'CurrentUser', 'BookModel', 'AuthorModel',
+                '_items', '_count', '_authors',
                 function(
                     $scope, $q, $timeout,
                     _,
-                    ListConfig,
-                    SocketWhereCondition, CurrentUser, AuthorModel,
-                    _items, _count
+                    ListConfig, SocketWhereCondition,
+                    CurrentUser, BookModel, AuthorModel,
+                    _items, _count, _authors
                 ) {
-                    // Set current scope reference to model
-                    AuthorModel.setScope($scope, false, 'items', 'itemCount');
+                    // Set current scope reference to models
+                    BookModel.setScope($scope, false, 'items', 'itemCount');
+                    AuthorModel.setScope($scope, false, 'authors');
 
                     // Add default list configuration variable to current scope
                     $scope = angular.extend($scope, angular.copy(ListConfig.getConfig()));
@@ -141,15 +171,16 @@
                     // Set initial data
                     $scope.items = _items;
                     $scope.itemCount = _count.count;
+                    $scope.authors = _authors;
                     $scope.user = CurrentUser.user();
 
                     // Initialize used title items
-                    $scope.titleItems = ListConfig.getTitleItems(AuthorModel.endpoint);
+                    $scope.titleItems = ListConfig.getTitleItems(BookModel.endpoint);
 
                     // Initialize default sort data
                     $scope.sort = {
-                        column: 'name',
-                        direction: true
+                        column: 'releaseDate',
+                        direction: false
                     };
 
                     // Initialize filters
@@ -173,7 +204,28 @@
                     };
 
                     /**
-                     * Simple watcher for 'currentPage' scope variable. If this is changed we need to fetch author data
+                     * Helper function to fetch specified author property.
+                     *
+                     * @param   {Number}    authorId        Author id to search
+                     * @param   {String}    [property]      Property to return, if not given returns whole author object
+                     * @param   {String}    [defaultValue]  Default value if author or property is not founded
+                     *
+                     * @returns {*}
+                     */
+                    $scope.getAuthor = function getAuthor(authorId, property, defaultValue) {
+                        defaultValue = defaultValue || 'Unknown';
+                        property = property || true;
+
+                        // Find author
+                        var author =  _.find($scope.authors, function(author) {
+                            return parseInt(author.id, 10) === parseInt(authorId, 10);
+                        });
+
+                        return author ? (property === true ? author : author[property]) : defaultValue;
+                    };
+
+                    /**
+                     * Simple watcher for 'currentPage' scope variable. If this is changed we need to fetch book data
                      * from server.
                      */
                     $scope.$watch('currentPage', function watcher(valueNew, valueOld) {
@@ -183,7 +235,7 @@
                     });
 
                     /**
-                     * Simple watcher for 'itemsPerPage' scope variable. If this is changed we need to fetch author data
+                     * Simple watcher for 'itemsPerPage' scope variable. If this is changed we need to fetch book data
                      * from server.
                      */
                     $scope.$watch('itemsPerPage', function watcher(valueNew, valueOld) {
@@ -240,7 +292,7 @@
                      *  1) Data count by given filter parameters
                      *  2) Actual data fetch for current page with filter parameters
                      *
-                     * These are fetched via 'AuthorModel' service with promises.
+                     * These are fetched via 'BookModel' service with promises.
                      *
                      * @private
                      */
@@ -254,14 +306,14 @@
 
                         // Data query specified parameters
                         var parameters = {
-                            populate: 'books',
+                            populate: 'author',
                             limit: $scope.itemsPerPage,
                             skip: ($scope.currentPage - 1) * $scope.itemsPerPage,
                             sort: $scope.sort.column + ' ' + ($scope.sort.direction ? 'ASC' : 'DESC')
                         };
 
                         // Fetch data count
-                        var count = AuthorModel
+                        var count = BookModel
                             .count(commonParameters)
                             .then(
                                 function onSuccess(response) {
@@ -270,15 +322,15 @@
                             );
 
                         // Fetch actual data
-                        var load = AuthorModel
+                        var load = BookModel
                             .load(_.merge({}, commonParameters, parameters))
                             .then(
-                                function onSuccess(response) {
+                                function callback(response) {
                                     $scope.items = response;
                                 }
                             );
 
-                        // And wrap those all to promise loading
+                        // Load all needed data
                         $q
                             .all([count, load])
                             .finally(

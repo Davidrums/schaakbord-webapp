@@ -1,10 +1,10 @@
 /**
- * Angular module for examples component. This component is divided to following logical components:
+ * Angular module for pages component. This component is divided to following logical components:
  *
- *  frontend.examples.author
- *  frontend.examples.book
- *  frontend.examples.chat
- *  frontend.examples.messages
+ *  frontend.pages.author
+ *  frontend.pages.book
+ *  frontend.pages.chat
+ *  frontend.pages.messages
  *
  * Each component has it own configuration for ui-router.
  */
@@ -12,22 +12,23 @@
     'use strict';
 
     // Define frontend.admin module
-    angular.module('frontend.examples', [
-        'frontend.examples.about',
-        'frontend.examples.author',
-        'frontend.examples.book',
-        'frontend.examples.chat',
-        'frontend.examples.messages'
+    angular.module('frontend.pages', [
+        'frontend.pages.about',
+        'frontend.pages.author',
+        'frontend.pages.book',
+        'frontend.pages.chat',
+        'frontend.pages.messages',
+        'frontend.pages.chess'
     ]);
 
     // Module configuration
-    angular.module('frontend.examples')
+    angular.module('frontend.pages')
         .config(
             [
                 '$stateProvider',
                 function($stateProvider) {
                     $stateProvider
-                        .state('examples', {
+                        .state('pages', {
                             parent: 'frontend',
                             data: {
                                 access: 1
@@ -37,7 +38,7 @@
                                     controller: [
                                         '$state',
                                         function($state) {
-                                            $state.go('examples.books');
+                                            $state.go('pages.books');
                                         }
                                     ]
                                 },
@@ -48,7 +49,7 @@
                                         _items: [
                                             'ContentNavigationItems',
                                             function resolve(ContentNavigationItems) {
-                                                return ContentNavigationItems.getItems('examples');
+                                                return ContentNavigationItems.getItems('pages');
                                             }
                                         ]
                                     }

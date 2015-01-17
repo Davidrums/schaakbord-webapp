@@ -5,27 +5,27 @@
  *  Controllers
  *  Models
  *
- * All of these are wrapped to 'frontend.examples.author' angular module.
+ * All of these are wrapped to 'frontend.pages.author' angular module.
  */
 (function() {
     'use strict';
 
-    // Define frontend.examples.author angular module
-    angular.module('frontend.examples.author', []);
+    // Define frontend.pages.author angular module
+    angular.module('frontend.pages.author', []);
 
     // Module configuration
-    angular.module('frontend.examples.author')
+    angular.module('frontend.pages.author')
         .config(
             [
                 '$stateProvider',
                 function($stateProvider) {
                     $stateProvider
                         // Authors list
-                        .state('examples.authors', {
-                            url: '/examples/authors',
+                        .state('pages.authors', {
+                            url: '/pages/authors',
                             views: {
                                 'content@': {
-                                    templateUrl: '/frontend/examples/author/list.html',
+                                    templateUrl: '/frontend/pages/author/list.html',
                                     controller: 'AuthorListController',
                                     resolve: {
                                         _items: [
@@ -58,11 +58,11 @@
                         })
 
                         // Single author
-                        .state('examples.author', {
-                            url: '/examples/author/:id',
+                        .state('pages.author', {
+                            url: '/pages/author/:id',
                             views: {
                                 'content@': {
-                                    templateUrl: '/frontend/examples/author/author.html',
+                                    templateUrl: '/frontend/pages/author/author.html',
                                     controller: 'AuthorController',
                                     resolve: {
                                         _author: [
@@ -101,14 +101,14 @@
                         })
 
                         // Add new author
-                        .state('examples.author.add', {
-                            url: '/examples/author/add',
+                        .state('pages.author.add', {
+                            url: '/pages/author/add',
                             data: {
                                 access: 2
                             },
                             views: {
                                 'content@': {
-                                    templateUrl: '/frontend/examples/author/add.html',
+                                    templateUrl: '/frontend/pages/author/add.html',
                                     controller: 'AuthorAddController'
                                 }
                             }

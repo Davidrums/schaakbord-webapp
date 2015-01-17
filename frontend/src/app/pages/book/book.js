@@ -4,27 +4,27 @@
  *  Controllers
  *  Models
  *
- * All of these are wrapped to 'frontend.examples.book' angular module.
+ * All of these are wrapped to 'frontend.pages.book' angular module.
  */
 (function() {
     'use strict';
 
-    // Define frontend.examples.book angular module
-    angular.module('frontend.examples.book', []);
+    // Define frontend.pages.book angular module
+    angular.module('frontend.pages.book', []);
 
     // Module configuration
-    angular.module('frontend.examples.book')
+    angular.module('frontend.pages.book')
         .config(
             [
                 '$stateProvider',
                 function($stateProvider) {
                     $stateProvider
                         // Book list
-                        .state('examples.books', {
-                            url: '/examples/books',
+                        .state('pages.books', {
+                            url: '/pages/books',
                             views: {
                                 'content@': {
-                                    templateUrl: '/frontend/examples/book/list.html',
+                                    templateUrl: '/frontend/pages/book/list.html',
                                     controller: 'BookListController',
                                     resolve: {
                                         _items: [
@@ -62,11 +62,11 @@
                         })
 
                         // Single book
-                        .state('examples.book', {
-                            url: '/examples/book/:id',
+                        .state('pages.book', {
+                            url: '/pages/book/:id',
                             views: {
                                 'content@': {
-                                    templateUrl: '/frontend/examples/book/book.html',
+                                    templateUrl: '/frontend/pages/book/book.html',
                                     controller: 'BookController',
                                     resolve: {
                                         _book: [
@@ -85,14 +85,14 @@
                         })
 
                         // Add new book
-                        .state('examples.book.add', {
-                            url: '/examples/book/add',
+                        .state('pages.book.add', {
+                            url: '/pages/book/add',
                             data: {
                                 access: 2
                             },
                             views: {
                                 'content@': {
-                                    templateUrl: '/frontend/examples/book/add.html',
+                                    templateUrl: '/frontend/pages/book/add.html',
                                     controller: 'BookAddController',
                                     resolve: {
                                         _authors: [

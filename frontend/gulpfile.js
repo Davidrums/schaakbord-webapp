@@ -153,9 +153,17 @@ gulp.task('fonts', function() {
 });
 
 /**
+ * Images
+ */
+gulp.task('images', function() {
+    return gulp.src('./bower_components/chessboard.js/img/**')
+        .pipe(gulp.dest('./dist/img'));
+});
+
+/**
  * Dist
  */
-gulp.task('dist', ['vendors', 'assets', 'fonts', 'styles-dist', 'scripts-dist'], function() {
+gulp.task('dist', ['vendors', 'assets', 'images', 'fonts', 'styles-dist', 'scripts-dist'], function() {
     return gulp.src('./src/app/index.html')
         .pipe(g.inject(gulp.src('./dist/vendors.min.{js,css}'), {ignorePath: 'dist', starttag: '<!-- inject:vendor:{{ext}} -->'}))
         .pipe(g.inject(gulp.src('./dist/' + bower.name + '.min.{js,css}'), {ignorePath: 'dist'}))
@@ -175,8 +183,8 @@ gulp.task('dist', ['vendors', 'assets', 'fonts', 'styles-dist', 'scripts-dist'],
  * Static file server
  */
 gulp.task('statics', g.serve({
-    port: 3001,
-    root: ['./.tmp', './src/app', './bower_components'],
+    port: 3000,
+    root: ['./.tmp', './src/app', './bower_components', './bower_components/chessboard.js/'],
     middleware: function(req, res, next) {
         return historyApiFallback(req, res, next);
     }

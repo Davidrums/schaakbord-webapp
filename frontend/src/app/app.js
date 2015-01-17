@@ -24,7 +24,7 @@
         'sails.io',
         'frontend-templates',
         'frontend.core',
-        'frontend.examples',
+        'frontend.pages',
         'frontend.admin',
         'frontend.auth'
     ]);

@@ -16,13 +16,13 @@
                 function service(AccessLevels) {
                     return [
                         {
-                            state:'examples.about',
+                            state:'pages.about',
                             title:'About',
                             access: AccessLevels.anon
                         },
                         {
-                            state:'examples',
-                            title:'Examples',
+                            state:'pages',
+                            title:'Pages',
                             access: AccessLevels.user
                         },
                         {
@@ -44,25 +44,30 @@
                 'AccessLevels',
                 function service(AccessLevels) {
                     var items = {
-                        'examples': [
+                        'pages': [
                             {
-                                state: 'examples.books',
+                                state: 'pages.books',
                                 title: 'Books',
                                 access: AccessLevels.user
                             },
                             {
-                                state: 'examples.authors',
+                                state: 'pages.authors',
                                 title: 'Authors',
                                 access: AccessLevels.user
                             },
                             {
-                                state: 'examples.messages',
+                                state: 'pages.messages',
                                 title: 'Messages',
                                 access: AccessLevels.user
                             },
                             {
-                                state: 'examples.chat',
+                                state: 'pages.chat',
                                 title: 'Chat',
+                                access: AccessLevels.user
+                            },
+                            {
+                                state: 'pages.chess',
+                                title: 'Chess',
                                 access: AccessLevels.user
                             }
                         ],
@@ -235,7 +240,7 @@
                      * @type    {{}}
                      */
                     var data = {
-                        'examples.books': {
+                        'pages.books': {
                             'Backend': [
                                 {
                                     url: repository + 'backend/api/models/Book.js',
@@ -255,28 +260,28 @@
                             ],
                             'Frontend': [
                                 {
-                                    url: repository + 'frontend/src/app/examples/book/book.js',
+                                    url: repository + 'frontend/src/app/pages/book/book.js',
                                     title: 'book.js',
                                     info: types.frontend.module
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/book/book-controllers.js',
+                                    url: repository + 'frontend/src/app/pages/book/book-controllers.js',
                                     title: 'book-controllers.js',
                                     info: types.generic.controller
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/book/book-models.js',
+                                    url: repository + 'frontend/src/app/pages/book/book-models.js',
                                     title: 'book-models.js',
                                     info: types.generic.model
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/book/list.html',
+                                    url: repository + 'frontend/src/app/pages/book/list.html',
                                     title: 'list.html',
                                     info: types.generic.template
                                 }
                             ]
                         },
-                        'examples.authors': {
+                        'pages.authors': {
                             'Backend': [
                                 {
                                     url: repository + 'backend/api/models/Author.js',
@@ -296,41 +301,41 @@
                             ],
                             'Frontend': [
                                 {
-                                    url: repository + 'frontend/src/app/examples/author/author.js',
+                                    url: repository + 'frontend/src/app/pages/author/author.js',
                                     title: 'author.js',
                                     info: types.frontend.module
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/author/author-controllers.js',
+                                    url: repository + 'frontend/src/app/pages/author/author-controllers.js',
                                     title: 'author-controllers.js',
                                     info: types.generic.controller
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/author/author-models.js',
+                                    url: repository + 'frontend/src/app/pages/author/author-models.js',
                                     title: 'author-models.js',
                                     info: types.generic.model
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/author/list.html',
+                                    url: repository + 'frontend/src/app/pages/author/list.html',
                                     title: 'list.html',
                                     info: types.generic.template
                                 }
                             ]
                         },
-                        'examples.messages': {
+                        'pages.messages': {
                             'Frontend': [
                                 {
-                                    url: repository + 'frontend/src/app/examples/messages/messages.js',
+                                    url: repository + 'frontend/src/app/pages/messages/messages.js',
                                     title: 'messages.js',
                                     info: types.frontend.module
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/messages/messages-controllers.js',
+                                    url: repository + 'frontend/src/app/pages/messages/messages-controllers.js',
                                     title: 'messages-controllers.js',
                                     info: types.generic.controller
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/messages/messages.html',
+                                    url: repository + 'frontend/src/app/pages/messages/messages.html',
                                     title: 'messages.html',
                                     info: types.generic.template
                                 }
@@ -353,7 +358,7 @@
                                 }
                             ]
                         },
-                        'examples.chat': {
+                        'pages.chat': {
                             'Backend': [
                                 {
                                     url: repository + 'backend/api/models/Message.js',
@@ -368,31 +373,72 @@
                             ],
                             'Frontend': [
                                 {
-                                    url: repository + 'frontend/src/app/examples/chat/chat.js',
+                                    url: repository + 'frontend/src/app/pages/chat/chat.js',
                                     title: 'chat.js',
                                     info: types.frontend.module
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/chat/chat-controllers.js',
+                                    url: repository + 'frontend/src/app/pages/chat/chat-controllers.js',
                                     title: 'chat-controllers.js',
                                     info: types.generic.controller
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/chat/chat-directives.js',
+                                    url: repository + 'frontend/src/app/pages/chat/chat-directives.js',
                                     title: 'chat-directives.js',
                                     info: types.frontend.directive
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/chat/chat-models.js',
+                                    url: repository + 'frontend/src/app/pages/chat/chat-models.js',
                                     title: 'chat-models.js',
                                     info: types.generic.model
                                 },
                                 {
-                                    url: repository + 'frontend/src/app/examples/chat/chat.html',
+                                    url: repository + 'frontend/src/app/pages/chat/chat.html',
                                     title: 'chat.html',
                                     info: types.generic.template
                                 }
+                            ],
+                        'pages.chess': {
+                            'Backend': [
+                                {
+                                    url: repository + 'backend/api/models/Message.js',
+                                    title: 'Message.js',
+                                    info: types.generic.model
+                                },
+                                {
+                                    url: repository + 'backend/api/controllers/MessageController.js',
+                                    title: 'MessageController.js',
+                                    info: types.generic.controller
+                                }
+                            ],
+                            'Frontend': [
+                                {
+                                    url: repository + 'frontend/src/app/pages/chess/chess.js',
+                                    title: 'chess.js',
+                                    info: types.frontend.module
+                                },
+                                {
+                                    url: repository + 'frontend/src/app/pages/chess/chess-controllers.js',
+                                    title: 'chess-controllers.js',
+                                    info: types.generic.controller
+                                },
+                                {
+                                    url: repository + 'frontend/src/app/pages/chess/chess-directives.js',
+                                    title: 'chess-directives.js',
+                                    info: types.frontend.directive
+                                },
+                                {
+                                    url: repository + 'frontend/src/app/pages/chess/chess-models.js',
+                                    title: 'chess-models.js',
+                                    info: types.generic.model
+                                },
+                                {
+                                    url: repository + 'frontend/src/app/pages/chess/chess.html',
+                                    title: 'chess.html',
+                                    info: types.generic.template
+                                }
                             ]
+                        }
                         }
                     };
 
@@ -416,9 +462,10 @@
                             var files = data[state];
 
                             switch (state) {
-                                case 'examples.books':
-                                case 'examples.authors':
-                                case 'examples.chat':
+                                case 'pages.books':
+                                case 'pages.authors':
+                                case 'pages.chat':
+                                case 'pages.chess':
                                     files = _.merge(files, generic.backend, generic.frontend);
                                     break;
                                 default:
